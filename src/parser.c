@@ -59,13 +59,43 @@ AST_T* parser_parse_expr(parser_T* parser)
 {
     if (parser->token->type == INT)
     {
-        AST_T* ast = init_ast(INT);
+        AST_T* ast = init_ast(AST_INT);
         ast->int_value = atoi(parser->token->value);
         parser_eat(parser, INT);
 
         return ast;
     }
-    else err(0, "Expr only supports TOK_TYPE: INT");
+    else if (parser->token->type == ID)
+    {
+        AST_T* ast = init_ast(AST_VARIABLE);
+
+        char* name = NULL;
+        while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+        {
+            if (!name) name = calloc(1, sizeof(char));
+            name = realloc(name, (strlen(name) + 128) * sizeof(char));
+            strcat(name, parser->token->value);
+            parser_eat(parser, parser->token->type);
+        }
+
+        ast->name = calloc(strlen(name), sizeof(char));
+        strcpy(ast->name, name);
+
+        int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+        switch(size)
+        {
+            case 1: ast->data_type = byte; break;
+            case 2: ast->data_type = i16; break;
+            case 4: ast->data_type = i32; break;
+            case 8: ast->data_type = ptr; break;
+        }
+
+        ast->int_value = stack_get_location(parser->stack, name);
+
+        return ast;
+    }
+    else err(0, "Expr only supports TOK_TYPE: INT || ID");
 }
 
 AST_T* parser_parse_statement(parser_T* parser)
@@ -110,24 +140,16 @@ AST_T* parser_parse_statement(parser_T* parser)
 
         tok_expected(parser, EQUAL, "<var> <name>: <type> = <- missing equal");
 
-        ast->value = parser_parse_expr(parser);
-        tok_expected(parser, SEMI, "<var> <name>: <type> = <expr>; <- missing semicolon");
-
-        char* size = calloc(1, sizeof(char));
         switch (ast->data_type)
         {
             case ptr: stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 8)); break;
-            case byte: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 1)); size = "byte"; break; }
-            case i16: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 2)); size = "word"; break; }
-            case i32: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 4)); size = "dword"; break; }
+            case byte: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 1)); break; }
+            case i16: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 2)); break; }
+            case i32: { stack_push(parser->stack, ast->name, (stack_get_current_element_location(parser->stack) + 4)); break; }
         }
 
-        char* template = "\tmov %s [ebp - %i], %i\n";
-        char* src = calloc(strlen(template) + 128, sizeof(char));
-        sprintf(src, template, size, stack_get_current_element_location(parser->stack), ast->value->int_value);
-
-        parser->local_asm = realloc(parser->local_asm, (strlen(parser->local_asm) + strlen(src) + 128) * sizeof(char));
-        strcat(parser->local_asm, src);
+        ast->value = parser_parse_expr(parser);
+        tok_expected(parser, SEMI, "<var> <name>: <type> = <expr>; <- missing semicolon");
 
         return ast;
     }

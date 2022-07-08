@@ -6,8 +6,10 @@ typedef struct AST_STRUCT
 {
     enum
     {
-        AST_COMPOUND,
+        AST_COMPOUND = 0,
         AST_VARIABLE_ASSIGN,
+        AST_VARIABLE_DEFINE,
+        AST_VARIABLE,
         AST_INT,
         AST_NOP
     } type;

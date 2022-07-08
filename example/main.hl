@@ -1,3 +1,6 @@
-var test0: i32 = 20;
-var test1: i16 = 23429;
-var test2: byte = 97;
+var t0: i32 = 2123;
+var t1: i32 = t0;
+var t2: byte = t0;
+var t3: byte = t2;
+var t4: i16 = t1;
+var t5: byte = t4;

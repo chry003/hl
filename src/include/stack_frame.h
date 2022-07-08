@@ -30,3 +30,9 @@ struct key_pair* stack_get_current_element(stack_T* stack);
 char* stack_get_current_element_name(stack_T* stack);
 
 int stack_get_current_element_location(stack_T* stack);
+
+int stack_peek_element_location(stack_T* stack, int offset);
+
+int stack_get_index(stack_T* stack, char* name);
+
+int stack_get_location_with_index(stack_T* stack, int index);
