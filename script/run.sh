@@ -1,8 +1,7 @@
 echo "[Compiling]: Removing old binary..."
 rm ./hl
 
-if [ -f "./main.asm" ]; then
-    rm ./main.asm
+if [ -f "./main" ]; then
     rm ./main.o
     rm ./main
 fi
@@ -10,16 +9,18 @@ fi
 echo "[Compiling]: Compiling source code..."
 gcc src/*.c -Isrc/include -o hl && ./hl ./example/main.hl
 
-if [ -f "./main.asm" ]; then
-    echo "[Compiling]: Generating object file from assembly..."
-    nasm -f elf ./main.asm -o ./main.o
+status_code=$?
 
-    echo "[Compiling]: Linking..."
-    gcc -no-pie -m32 ./main.o -o ./main
+if [[ $status_code -eq 0 ]]; then
+    if [ -f "./main.asm" ]; then
+        echo "[Compiling]: Generating object file from assembly..."
+        nasm -f elf ./main.asm -o ./main.o
 
-    echo "[Compiling]: Runing and status code..."
-    ./main
-    echo $?
+        echo "[Compiling]: Linking..."
+        gcc -no-pie -m32 ./main.o -o ./main
 
-    cat ./main.asm
+        echo "[Compiling]: Runing and status code..."
+        ./main
+        echo $?
+    fi
 fi

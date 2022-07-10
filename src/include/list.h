@@ -11,6 +11,7 @@ typedef struct LIST_STRUCT
 
 list_T* init_list(size_t item_size);
 void list_push(list_T* list, void* item);
+void* list_pop_first(list_T* list);
 
 typedef struct MAP_STRUCT
 {

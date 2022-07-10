@@ -10,6 +10,8 @@ typedef struct AST_STRUCT
         AST_VARIABLE_ASSIGN,
         AST_VARIABLE_DEFINE,
         AST_VARIABLE,
+        AST_IF,
+        AST_IF_CONDITION,
         AST_INT,
         AST_NOP
     } type;
@@ -33,3 +35,5 @@ typedef struct AST_STRUCT
 } AST_T;
 
 AST_T* init_ast(int type);
+
+void print_ast(AST_T* ast);

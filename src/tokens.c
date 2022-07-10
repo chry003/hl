@@ -20,6 +20,8 @@ const char* token_type_to_str(int type)
         case INT: return "INT";
         case COLON: return "COLON";
         case SEMI: return "SEMI";
+        case LPAREN: return "LPAREN";
+        case RPAREN: return "RPAREN";
         case UNDERSCORE: return "UNDERSCORE";
         case EQUAL: return "EQUAL";
         case EOFL: return "EOFL";

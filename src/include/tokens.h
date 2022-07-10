@@ -17,6 +17,8 @@ typedef struct TOKEN_STRUCT
         COLON,
         SEMI,
         UNDERSCORE,
+        LPAREN,
+        RPAREN,
 
         // FOR ARTHMETIC THINGS
 

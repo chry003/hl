@@ -22,6 +22,20 @@ void list_push(list_T* list, void* item)
     list->items[list->size-1] = item;
 }
 
+void* list_pop_first(list_T* list)
+{
+    if (!list->size) return NULL;
+
+    void* item = list->items[0];
+
+    if (list->size != 1) for (int i = 0; i < list->size; i++) list->items[i] = list->items[i + 1];
+    else list->items[0] = NULL;
+
+    list->size--; list->items = realloc(list->items, (list->size * list->item_size));
+
+    return item;
+}
+
 map_T* init_map()
 {
     map_T* map = calloc(1, sizeof(struct MAP_STRUCT));

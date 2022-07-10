@@ -24,7 +24,7 @@ char* tok_expected(parser_T* parser, int type, const char* info)
     if (parser->token->type != type)
     {
         const char* template = "[Parser::ERR]: Unexpected token `%s`, expected `%s`\n[Info]: %s";
-        char* str = calloc(strlen(template) + 8, sizeof(char));
+        char* str = calloc(strlen(template) + 128, sizeof(char));
         sprintf(str, template, token_to_str(parser->token), token_type_to_str(type), info);
         printf("%s\n", str);
 
@@ -45,7 +45,7 @@ token_T* parser_eat(parser_T* parser, int type)
         exit(1);
     }
 
-    printf("[Parser]: %s\n", token_to_str(parser->token));
+    // printf("[Parser]: %s\n", token_to_str(parser->token));
     parser->token = lexer_next_token(parser->lexer);
     return parser->token;
 }
@@ -153,7 +153,143 @@ AST_T* parser_parse_statement(parser_T* parser)
 
         return ast;
     }
-    else err(0, "Statement only supports <var> assignments");
+    else if (tok_value_match(parser, "if"))
+    {
+        parser_eat(parser, ID);
+        tok_expected(parser, LPAREN, "<if> statement needs a condition enclosed with parenthesis.");
+
+        AST_T* lvalue = init_ast(AST_IF_CONDITION);
+        AST_T* condition = init_ast(AST_IF_CONDITION); // != -> 0, == -> 1, > -> 2, < -> 3, <= -> 4, >= -> 5
+        AST_T* rvalue = init_ast(AST_IF_CONDITION);
+
+        condition->data_type = i32;
+
+        if (parser->token->type == ID)
+        {
+            char* name = NULL;
+            while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+            {
+                if (!name) name = calloc(1, sizeof(char));
+                name = realloc(name, (strlen(name) + 128) * sizeof(char));
+                strcat(name, parser->token->value);
+                parser_eat(parser, parser->token->type);
+            }
+
+            int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+            switch(size)
+            {
+                case 1: lvalue->data_type = byte; break;
+                case 2: lvalue->data_type = i16; break;
+                case 4: lvalue->data_type = i32; break;
+                case 8: lvalue->data_type = ptr; break;
+            }
+
+            lvalue->name = name;
+            lvalue->int_value = stack_get_location(parser->stack, name);
+        }
+        else if (parser->token->type == INT)
+        {
+            lvalue->data_type = i32;
+            lvalue->int_value = atoi(parser->token->value);
+            parser_eat(parser, INT);
+        }
+        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
+
+        if (parser->token->type == EQUAL)
+        {
+            parser_eat(parser, EQUAL);
+            tok_expected(parser, EQUAL, "if ( <expr> = <- missing equal, did you mean `==` this?");
+            condition->int_value = 1;
+        }
+
+        if (parser->token->type == ID)
+        {
+            char* name = NULL;
+            while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+            {
+                if (!name) name = calloc(1, sizeof(char));
+                name = realloc(name, (strlen(name) + 128) * sizeof(char));
+                strcat(name, parser->token->value);
+                parser_eat(parser, parser->token->type);
+            }
+
+            int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+            switch(size)
+            {
+                case 1: rvalue->data_type = byte; break;
+                case 2: rvalue->data_type = i16; break;
+                case 4: rvalue->data_type = i32; break;
+                case 8: rvalue->data_type = ptr; break;
+            }
+
+            rvalue->name = name;
+            rvalue->int_value = stack_get_location(parser->stack, name);
+        }
+        else if (parser->token->type == INT)
+        {
+            rvalue->data_type = lvalue->data_type;
+            rvalue->int_value = atoi(parser->token->value);
+            parser_eat(parser, INT);
+        }
+        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
+
+        tok_expected(parser, RPAREN, "Unexpected token type, expected if (condition) <- missing RPAREN");
+
+        print_ast(lvalue);
+        print_ast(condition);
+        print_ast(rvalue);
+
+        ast->type = AST_IF;
+        ast->body = init_list(sizeof(struct AST_STRUCT));
+        list_push(ast->body, lvalue); list_push(ast->body, condition); list_push(ast->body, rvalue);
+
+        return ast;
+    }
+    else if (parser->token->type == ID)
+    {
+        char* name = NULL;
+        while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+        {
+            if (!name) name = calloc(1, sizeof(char));
+            name = realloc(name, (strlen(name) + 128) * sizeof(char));
+            strcat(name, parser->token->value);
+            parser_eat(parser, parser->token->type);
+        }
+
+        int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+        switch(size)
+        {
+            case 1: ast->data_type = byte; break;
+            case 2: ast->data_type = i16; break;
+            case 4: ast->data_type = i32; break;
+            case 8: ast->data_type = ptr; break;
+        }
+
+        if (stack_get_location(parser->stack, name))
+        {
+            ast->type = AST_VARIABLE_ASSIGN;
+            ast->name = calloc(1, sizeof(char));
+            strcpy(ast->name, name);
+
+            tok_expected(parser, EQUAL, "<var_name> = <- missing equal");
+            ast->value = parser_parse_expr(parser);
+
+            tok_expected(parser, SEMI, "<var_name> = <expr>; <- missing semicolon");
+        }
+        else err(0, "cannot assign <expr> to unknown variable");
+
+        return ast;
+    }
+    else
+    {
+        char* template = "Unexpected <statement>, did you mean to use this? `%s`";
+        char* src = calloc(strlen(template) + 128, sizeof(char));
+        sprintf(src, template, token_to_str(parser->token));
+        err(0, src);
+    }
 }
 
 AST_T* parser_parse_compound(parser_T* parser)
