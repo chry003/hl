@@ -1,0 +1,2 @@
+[Status]: `<if>` statement can parse, but it won't generate assembly.
+[Change]: Now, it can generate `main.asm` and also compile too, using `system(char*)` for now as it was easy to implement but it'll change in future.
