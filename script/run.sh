@@ -1,4 +1,3 @@
-echo "[Compiling]: Compiling source code..."
 gcc src/*.c -Isrc/include -o hl && ./hl ./example/main.hl
 
 status_code=$?

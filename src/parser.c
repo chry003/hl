@@ -45,7 +45,7 @@ token_T* parser_eat(parser_T* parser, int type)
         exit(1);
     }
 
-    printf("[Parser]: %s\n", token_to_str(parser->token));
+    // printf("[Parser]: %s\n", token_to_str(parser->token));
     parser->token = lexer_next_token(parser->lexer);
     return parser->token;
 }
@@ -138,15 +138,20 @@ AST_T* parser_parse_expr(parser_T* parser)
             lvalue->int_value = atoi(parser->token->value);
             parser_eat(parser, INT);
         }
-        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
-
+        else err(0, "Only TOK_ID & TOK_INT are supported in <conditional> expr.");
 
 
         if (parser->token->type == EQUAL)
         {
             parser_eat(parser, EQUAL);
-            tok_expected(parser, EQUAL, "if ( <expr> = <- missing equal, did you mean `==` this?");
+            tok_expected(parser, EQUAL, "( <expr> = <- missing equal, did you mean `==` this?");
             condition->int_value = 1;
+        }
+        else if (parser->token->type == NOT_EQUAL)
+        {
+            parser_eat(parser, NOT_EQUAL);
+            tok_expected(parser, EQUAL, "( <expr> ! <- missing equal, did you mean `!=` this?");
+            condition->int_value = 0;
         }
         else if (parser->token->type == LT)
         {
@@ -168,6 +173,7 @@ AST_T* parser_parse_expr(parser_T* parser)
                 condition->int_value = 4;
             }
         }
+        else err(0, "<conditional> expr needs a conditon, !=, ==, lt, gt, le, ge");
 
 
 
@@ -202,15 +208,15 @@ AST_T* parser_parse_expr(parser_T* parser)
             rvalue->int_value = atoi(parser->token->value);
             parser_eat(parser, INT);
         }
-        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
+        else err(0, "Only TOK_ID & TOK_INT are supported in <conditional> expr.");
 
-        tok_expected(parser, RPAREN, "Unexpected token type, expected if (condition) <- missing RPAREN");
+        tok_expected(parser, RPAREN, "Unexpected token type, expected ) <- missing RPAREN");
 
         list_push(ast->body, lvalue); list_push(ast->body, condition); list_push(ast->body, rvalue);
 
         return ast;
     }
-    else err(0, "Expr only supports TOK_TYPE: INT || ID");
+    else err(0, "Expr only supports TOK_TYPE: INT || ID || <CONDITION>");
 }
 
 AST_T* parser_parse_statement(parser_T* parser)

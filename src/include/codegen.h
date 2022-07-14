@@ -5,7 +5,7 @@
 #include "io.h"
 #include "stack_frame.h"
 
-#define WRITE_SIZE 512
+#define WRITE_SIZE 104857600
 
 typedef struct CODEGEN_STRUCT
 {
@@ -18,7 +18,7 @@ codegen_T* init_codegen(stack_T* stack);
 void codegen_parse_ast(codegen_T* codegen, AST_T* ast);
 
 #define codegen_append(codegen, temp, ...) {\
-        char* src = calloc(strlen(temp) + WRITE_SIZE, sizeof(char)); \
+        char* src = calloc(strlen(temp) + 8, sizeof(char)); \
         sprintf(src, temp, __VA_ARGS__); \
         codegen_extend_with_source(codegen, src);\
                                             }

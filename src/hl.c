@@ -15,6 +15,7 @@ void hl_compiler(char* src)
     AST_T* root = parser_parse(parser);
     codegen_T* codegen = init_codegen(parser->stack);
     codegen_parse_ast(codegen, root);
+    codegen_write(codegen);
 }
 
 void hl_compile_file(const char* filename)

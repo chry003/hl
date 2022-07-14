@@ -86,7 +86,8 @@ void codegen_variable(codegen_T* codegen, AST_T* ast)
 
         if ( !first_element->name && !third_element->name )
         {
-            err(0, "<conditional> expr cannot handle <imm8/ imm16/ imm32> with <imm8/ imm16/ imm32>, not implemented yet.");
+            codegen_append(codegen, "\tmov eax, %i\n", first_element->int_value);
+            codegen_append(codegen, "\tcmp eax, %i\n", third_element->int_value);
         }
         else if ( !first_element->name && third_element->name || first_element->name && !third_element->name )
         {
@@ -156,13 +157,11 @@ void codegen_parse_ast(codegen_T* codegen, AST_T* ast)
         case AST_COMPOUND: codegen_compound(codegen, ast); break;
         default: err(0, "[Codegen]: only variables are compilable, others are not implemented yet.");
     }
-
-    codegen_write(codegen);
 }
 
 void codegen_extend_with_source(codegen_T* codegen, char* src)
 {
-    codegen->label_code = realloc(codegen->label_code, (strlen(src) + WRITE_SIZE) * sizeof(char));
+    codegen->label_code = realloc(codegen->label_code, (strlen(src) + strlen(codegen->label_code) + 8) * sizeof(char));
     strcat(codegen->label_code, src);
 }
 
@@ -173,14 +172,22 @@ void codegen_write(codegen_T* codegen)
                   "main:\n"
                   "\tpush ebp\n"
                   "\tmov ebp, esp\n";
-    char* end =   "\tmov eax, [ebp - 9]\n"
+    char* end =   "\tmov eax, [ebp - 8]\n"
                   "\tpop ebp\n"
                   "\tret";
 
     char* out = calloc(strlen(begin) + strlen(codegen->label_code) + strlen(end) + WRITE_SIZE, sizeof(char));
     strcat(out, begin); strcat(out, codegen->label_code); strcat(out, end);
+
+    system("echo -e '[INFO]: Writing to output file'");
     write_file("main.asm", out);
+
+    system("echo '[NASM]: Assembling output file'");
     system("nasm -f elf -o ./main.o ./main.asm");
+
+    system("echo '[INFO]: Linking with object file'");
     system("gcc -no-pie -m32 -o ./main ./main.o");
+
+    system("echo '[INFO]: Removing object file'");
     system("rm ./main.o");
 }

@@ -1,7 +1,12 @@
-var t1: i32 = 20;
-var t2: i32 = 10;
+var t1: i32 = 1030;
+var t2: i32 = t1;
 
-t2 = ( t1 > t2 );
+t2 = ( t1 != t2 );
 
-var t3: byte = ( t2 == 0 );
-t3 = ( t2 > t3 );
+var t3: i16 = 843;
+var t4: i16 = 200;
+
+t4 = ( t4 <= t1 );
+t3 = ( t4 != 1 );
+
+var t5: byte = t3;
