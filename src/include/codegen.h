@@ -5,7 +5,7 @@
 #include "io.h"
 #include "stack_frame.h"
 
-#define WRITE_SIZE 256
+#define WRITE_SIZE 512
 
 typedef struct CODEGEN_STRUCT
 {

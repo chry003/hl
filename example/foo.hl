@@ -1,6 +1,5 @@
 #include <std.hl>
 
-
 proc main(): i32
 {
     buffer: ptr = "hello, world!";

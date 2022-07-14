@@ -1,2 +1,7 @@
-var t1: i32 = 10;
-var t2: i32 = 20;
+var t1: i32 = 20;
+var t2: i32 = 10;
+
+t2 = ( t1 > t2 );
+
+var t3: byte = ( t2 == 0 );
+t3 = ( t2 > t3 );

@@ -24,6 +24,9 @@ typedef struct TOKEN_STRUCT
 
         // FOR COMPARISON
         EQUAL,
+        LT,
+        GT,
+        NOT_EQUAL,
 
         // MIS
         EOFL

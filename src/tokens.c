@@ -24,6 +24,9 @@ const char* token_type_to_str(int type)
         case RPAREN: return "RPAREN";
         case UNDERSCORE: return "UNDERSCORE";
         case EQUAL: return "EQUAL";
+        case LT: return "LT";
+        case GT: return "GT";
+        case NOT_EQUAL: return "NOT_EQUAL";
         case EOFL: return "EOFL";
     };
 

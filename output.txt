@@ -1,35 +1,57 @@
-[Compiling]: Removing old binary...
 [Compiling]: Compiling source code...
 [Parser]: <type=ID, int_type=0, value=var>
-[Parser]: <type=ID, int_type=0, value=test>
-[Parser]: <type=INT, int_type=1, value=0>
-[Parser]: <type=COLON, int_type=2, value=:>
-[Parser]: <type=ID, int_type=0, value=i>
-[Parser]: <type=INT, int_type=1, value=32>
-[Parser]: <type=EQUAL, int_type=5, value==>
-[Parser]: <type=INT, int_type=1, value=20>
-[Parser]: <type=SEMI, int_type=3, value=;>
-[Parser]: <type=ID, int_type=0, value=var>
-[Parser]: <type=ID, int_type=0, value=test>
+[Parser]: <type=ID, int_type=0, value=t>
 [Parser]: <type=INT, int_type=1, value=1>
 [Parser]: <type=COLON, int_type=2, value=:>
 [Parser]: <type=ID, int_type=0, value=i>
-[Parser]: <type=INT, int_type=1, value=16>
-[Parser]: <type=EQUAL, int_type=5, value==>
-[Parser]: <type=INT, int_type=1, value=23429>
+[Parser]: <type=INT, int_type=1, value=32>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=INT, int_type=1, value=20>
 [Parser]: <type=SEMI, int_type=3, value=;>
 [Parser]: <type=ID, int_type=0, value=var>
-[Parser]: <type=ID, int_type=0, value=test>
+[Parser]: <type=ID, int_type=0, value=t>
 [Parser]: <type=INT, int_type=1, value=2>
 [Parser]: <type=COLON, int_type=2, value=:>
-[Parser]: <type=ID, int_type=0, value=byte>
-[Parser]: <type=EQUAL, int_type=5, value==>
-[Parser]: <type=INT, int_type=1, value=97>
+[Parser]: <type=ID, int_type=0, value=i>
+[Parser]: <type=INT, int_type=1, value=32>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=INT, int_type=1, value=10>
 [Parser]: <type=SEMI, int_type=3, value=;>
-[Stack]: <test0: 4>
-[Stack]: <test1: 6>
-[Stack]: <test2: 7>
-[Compiling]: Generating object file from assembly...
-[Compiling]: Linking...
-[Compiling]: Runing and status code...
-20
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=2>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=LPAREN, int_type=5, value=(>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=1>
+[Parser]: <type=LT, int_type=8, value=>>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=2>
+[Parser]: <type=RPAREN, int_type=6, value=)>
+[Parser]: <type=SEMI, int_type=3, value=;>
+[Parser]: <type=ID, int_type=0, value=var>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=3>
+[Parser]: <type=COLON, int_type=2, value=:>
+[Parser]: <type=ID, int_type=0, value=byte>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=LPAREN, int_type=5, value=(>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=2>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=INT, int_type=1, value=0>
+[Parser]: <type=RPAREN, int_type=6, value=)>
+[Parser]: <type=SEMI, int_type=3, value=;>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=3>
+[Parser]: <type=EQUAL, int_type=7, value==>
+[Parser]: <type=LPAREN, int_type=5, value=(>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=2>
+[Parser]: <type=LT, int_type=8, value=>>
+[Parser]: <type=ID, int_type=0, value=t>
+[Parser]: <type=INT, int_type=1, value=3>
+[Parser]: <type=RPAREN, int_type=6, value=)>
+[Parser]: <type=SEMI, int_type=3, value=;>
+[CODE_HL]: 0
+[CODE_ASM]: 1

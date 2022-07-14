@@ -1,4 +1,1 @@
-var foo: i32 = 200;
-var bar: i32 = 3;
-
-foo = bar;
+var foo: i32 = 10;

@@ -1,4 +1,5 @@
 #include "include/AST.h"
+#include "include/macro.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +15,7 @@ AST_T* init_ast(int type)
     return ast;
 }
 
-void print_ast(AST_T* ast)
+void ast_print(AST_T* ast)
 {
     char* template = "\n[Name]: %s\n"
                      "[int_value]: %i\n"
@@ -41,7 +42,7 @@ void print_ast(AST_T* ast)
         case AST_VARIABLE_DEFINE: ast_type = "AST_VARIABLE_DEFINE"; break;
         case AST_VARIABLE: ast_type = "AST_VARIABLE"; break;
         case AST_IF: ast_type = "AST_IF"; break;
-        case AST_IF_CONDITION: ast_type = "AST_IF_CONDITION"; break;
+        case AST_CONDITION: ast_type = "AST_CONDITION"; break;
         case AST_INT: ast_type = "AST_INT"; break;
         case AST_NOP: ast_type = "AST_NOP"; break;
     }
@@ -55,7 +56,7 @@ void print_ast(AST_T* ast)
             case AST_VARIABLE_DEFINE: ast_value_type = "AST_VARIABLE_DEFINE"; break;
             case AST_VARIABLE: ast_value_type = "AST_VARIABLE"; break;
             case AST_IF: ast_value_type = "AST_IF"; break;
-            case AST_IF_CONDITION: ast_value_type = "AST_IF_CONDITION"; break;
+            case AST_CONDITION: ast_value_type = "AST_CONDITION"; break;
             case AST_INT: ast_value_type = "AST_INT"; break;
             case AST_NOP: ast_value_type = "AST_NOP"; break;
         }
@@ -83,4 +84,19 @@ void print_ast(AST_T* ast)
             ast_value_type
            );
     printf("%s\n", src);
+}
+
+char* ast_get_data_type_name(AST_T* ast)
+{
+    char* value = calloc(1, sizeof(char));
+
+    switch(ast->data_type)
+    {
+        case byte: value = "byte"; break;
+        case i16: value = "word"; break;
+        case i32: value = "dword"; break;
+        case ptr: err(0, "pointers are not implemented yet.");
+    }
+
+    return value;
 }

@@ -3,17 +3,22 @@ section .text
 main:
 	push ebp
 	mov ebp, esp
-	mov dword [ebp - 4], 2123
+	mov dword [ebp - 4], 20
+	mov dword [ebp - 8], 10
 	mov eax, dword [ebp - 4]
+	cmp eax, dword [ebp - 8]
+	setg al
+	movzx eax, al
 	mov dword [ebp - 8], eax
-	mov eax, dword [ebp - 4]
+	cmp dword [ebp - 8], 0
+	sete al
+	movzx eax, al
 	mov byte [ebp - 9], al
-	movzx eax, byte [ebp - 9]
-	mov byte [ebp - 10], al
 	mov eax, dword [ebp - 8]
-	mov word [ebp - 12], ax
-	movzx eax, word [ebp - 12]
-	mov byte [ebp - 13], al
-	mov eax, 0
+	cmp al, byte [ebp - 9]
+	setg al
+	movzx eax, al
+	mov byte [ebp - 9], al
+	mov eax, [ebp - 9]
 	pop ebp
 	ret

@@ -45,7 +45,7 @@ token_T* parser_eat(parser_T* parser, int type)
         exit(1);
     }
 
-    // printf("[Parser]: %s\n", token_to_str(parser->token));
+    printf("[Parser]: %s\n", token_to_str(parser->token));
     parser->token = lexer_next_token(parser->lexer);
     return parser->token;
 }
@@ -92,6 +92,121 @@ AST_T* parser_parse_expr(parser_T* parser)
         }
 
         ast->int_value = stack_get_location(parser->stack, name);
+
+        return ast;
+    }
+    else if (parser->token->type == LPAREN)
+    {
+        AST_T* ast = init_ast(AST_COMPOUND);
+
+        parser_eat(parser, LPAREN);
+
+        AST_T* lvalue = init_ast(AST_CONDITION);
+        AST_T* condition = init_ast(AST_CONDITION); // != -> 0, == -> 1, > -> 2, < -> 3, <= -> 4, >= -> 5
+        AST_T* rvalue = init_ast(AST_CONDITION);
+
+        condition->data_type = i32;
+
+        if (parser->token->type == ID)
+        {
+            char* name = NULL;
+            while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+            {
+                if (!name) name = calloc(1, sizeof(char));
+                name = realloc(name, (strlen(name) + 128) * sizeof(char));
+                strcat(name, parser->token->value);
+                parser_eat(parser, parser->token->type);
+            }
+
+            int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+            switch(size)
+            {
+                case 1: lvalue->data_type = byte; break;
+                case 2: lvalue->data_type = i16; break;
+                case 4: lvalue->data_type = i32; break;
+                case 8: lvalue->data_type = ptr; break;
+                default: err(0, "not supported");
+            }
+
+            lvalue->name = name;
+            lvalue->int_value = stack_get_location(parser->stack, name);
+        }
+        else if (parser->token->type == INT)
+        {
+            lvalue->data_type = i32;
+            lvalue->int_value = atoi(parser->token->value);
+            parser_eat(parser, INT);
+        }
+        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
+
+
+
+        if (parser->token->type == EQUAL)
+        {
+            parser_eat(parser, EQUAL);
+            tok_expected(parser, EQUAL, "if ( <expr> = <- missing equal, did you mean `==` this?");
+            condition->int_value = 1;
+        }
+        else if (parser->token->type == LT)
+        {
+            parser_eat(parser, LT);
+            condition->int_value = 2;
+            if (parser->token->type == EQUAL)
+            {
+                parser_eat(parser, EQUAL);
+                condition->int_value = 5;
+            }
+        }
+        else if (parser->token->type == GT)
+        {
+            parser_eat(parser, GT);
+            condition->int_value = 3;
+            if (parser->token->type == EQUAL)
+            {
+                parser_eat(parser, EQUAL);
+                condition->int_value = 4;
+            }
+        }
+
+
+
+        if (parser->token->type == ID)
+        {
+            char* name = NULL;
+            while (parser->token->type == ID || parser->token->type == INT || parser->token->type == UNDERSCORE)
+            {
+                if (!name) name = calloc(1, sizeof(char));
+                name = realloc(name, (strlen(name) + 128) * sizeof(char));
+                strcat(name, parser->token->value);
+                parser_eat(parser, parser->token->type);
+            }
+
+            int size = stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name)) - stack_get_location_with_index(parser->stack, stack_get_index(parser->stack, name) - 1);
+
+            switch(size)
+            {
+                case 1: rvalue->data_type = byte; break;
+                case 2: rvalue->data_type = i16; break;
+                case 4: rvalue->data_type = i32; break;
+                case 8: rvalue->data_type = ptr; break;
+                default: err(0, "not supported");
+            }
+
+            rvalue->name = name;
+            rvalue->int_value = stack_get_location(parser->stack, name);
+        }
+        else if (parser->token->type == INT)
+        {
+            rvalue->data_type = lvalue->data_type;
+            rvalue->int_value = atoi(parser->token->value);
+            parser_eat(parser, INT);
+        }
+        else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
+
+        tok_expected(parser, RPAREN, "Unexpected token type, expected if (condition) <- missing RPAREN");
+
+        list_push(ast->body, lvalue); list_push(ast->body, condition); list_push(ast->body, rvalue);
 
         return ast;
     }
@@ -158,9 +273,9 @@ AST_T* parser_parse_statement(parser_T* parser)
         parser_eat(parser, ID);
         tok_expected(parser, LPAREN, "<if> statement needs a condition enclosed with parenthesis.");
 
-        AST_T* lvalue = init_ast(AST_IF_CONDITION);
-        AST_T* condition = init_ast(AST_IF_CONDITION); // != -> 0, == -> 1, > -> 2, < -> 3, <= -> 4, >= -> 5
-        AST_T* rvalue = init_ast(AST_IF_CONDITION);
+        AST_T* lvalue = init_ast(AST_CONDITION);
+        AST_T* condition = init_ast(AST_CONDITION); // != -> 0, == -> 1, > -> 2, < -> 3, <= -> 4, >= -> 5
+        AST_T* rvalue = init_ast(AST_CONDITION);
 
         condition->data_type = i32;
 
@@ -236,10 +351,6 @@ AST_T* parser_parse_statement(parser_T* parser)
         else err(0, "Only TOK_ID & TOK_INT are supported in <if> statement.");
 
         tok_expected(parser, RPAREN, "Unexpected token type, expected if (condition) <- missing RPAREN");
-
-        print_ast(lvalue);
-        print_ast(condition);
-        print_ast(rvalue);
 
         ast->type = AST_IF;
         ast->body = init_list(sizeof(struct AST_STRUCT));
