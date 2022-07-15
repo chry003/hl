@@ -1,0 +1,16 @@
+var t1: i32 = 100;
+var t2: i16 = 200;
+
+
+
+var t3: byte = t2;
+var t4: i16 = t1;
+var t5: byte = 100;
+var t6: i32 = t5;
+
+
+
+t6 = t5;
+t5 = t6;
+
+t1 = t5;

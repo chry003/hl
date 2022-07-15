@@ -1,0 +1,7 @@
+-- Write lexer to generate lexical tokens
+[] Lexer
+    -- read from file
+    -- generate tokens
+[] Parser
+    -- get next token from lexer
+    -- generate ast node

@@ -22,6 +22,8 @@ const char* token_type_to_str(int type)
         case SEMI: return "SEMI";
         case LPAREN: return "LPAREN";
         case RPAREN: return "RPAREN";
+        case LBRACE: return "LPAREN";
+        case RBRACE: return "RPAREN";
         case UNDERSCORE: return "UNDERSCORE";
         case EQUAL: return "EQUAL";
         case LT: return "LT";

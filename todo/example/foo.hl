@@ -1,0 +1,30 @@
+#include <std.hl>
+
+proc main(): i32
+{
+    buffer: ptr = "hello, world!";
+    size: i32 = strlen(buffer);
+
+    // stdout
+    sys_write(buffer, size);
+
+    one_char: byte;
+    size: i32 = 256;
+
+    // stdin
+    sys_read(&one_char, size);
+
+    a: i32 = 10;
+    b: i32 = 20;
+    swap(&a, &b);
+
+    ret 0;
+}
+
+proc swap(a: ptr, b: ptr): void
+{
+    c: i32;
+    c = *a;
+    *a = *b;
+    *b = c;
+}

@@ -1,0 +1,8 @@
+var years_of_service: i32 = 5;
+var salary: i32 = 50;
+
+salary = 20;
+if ( years_of_service >= 5 )
+{
+    salary = 100;
+}

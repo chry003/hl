@@ -1,0 +1,5 @@
+var first: i32 = 200;
+var second: i32 = 100;
+var greatest: i32 = first;
+
+if (second > first) greatest = second;

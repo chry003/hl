@@ -1,4 +1,4 @@
-gcc src/*.c -Isrc/include -o hl && ./hl ./example/main.hl
+gcc src/*.c -Isrc/include -o hl && ./hl $1
 
 status_code=$?
 echo -e "[CODE_HL]: $status_code"

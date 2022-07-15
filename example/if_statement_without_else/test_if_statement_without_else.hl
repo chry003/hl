@@ -1,0 +1,10 @@
+var t1: i32 = 124505;
+var t2: i16 = t1;
+
+var check_condition: i16 = 0;
+if ( t1 < t2 )
+{
+    check_condition = 1;
+}
+
+var print: i32 = check_condition;

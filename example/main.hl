@@ -1,12 +1,14 @@
-var t1: i32 = 1030;
-var t2: i32 = t1;
+var first: i32 = 100;
+var second: i32 = 200;
+var greatest: i32 = 0;
 
-t2 = ( t1 != t2 );
+greatest = 100;
+if (first > second)
+{
+    greatest = first;
+}
 
-var t3: i16 = 843;
-var t4: i16 = 200;
-
-t4 = ( t4 <= t1 );
-t3 = ( t4 != 1 );
-
-var t5: byte = t3;
+if (second > first)
+{
+    greatest = second;
+}

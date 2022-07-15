@@ -10,6 +10,7 @@ typedef struct PARSER_STRUCT
     token_T* token;
     stack_T* stack;
     char* local_asm;
+    int count_if_statements;
 } parser_T;
 
 parser_T* init_parser(lexer_T* lexer);

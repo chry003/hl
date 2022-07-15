@@ -87,6 +87,8 @@ token_T* lexer_next_token(lexer_T* lexer)
             case '_': return lexer_advance_current(lexer, UNDERSCORE);
             case '(': return lexer_advance_current(lexer, LPAREN);
             case ')': return lexer_advance_current(lexer, RPAREN);
+            case '{': return lexer_advance_current(lexer, LBRACE);
+            case '}': return lexer_advance_current(lexer, RBRACE);
             case '=': return lexer_advance_current(lexer, EQUAL);
             case '>': return lexer_advance_current(lexer, LT);
             case '<': return lexer_advance_current(lexer, GT);

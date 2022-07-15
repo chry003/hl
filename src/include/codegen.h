@@ -11,9 +11,12 @@ typedef struct CODEGEN_STRUCT
 {
     char* label_code;
     stack_T* stack;
+    int count_if_statements;
 } codegen_T;
 
 codegen_T* init_codegen(stack_T* stack);
+
+char* codegen_get_statement_count(codegen_T* codegen);
 
 void codegen_parse_ast(codegen_T* codegen, AST_T* ast);
 

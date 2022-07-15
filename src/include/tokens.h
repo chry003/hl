@@ -19,6 +19,8 @@ typedef struct TOKEN_STRUCT
         UNDERSCORE,
         LPAREN,
         RPAREN,
+        LBRACE,
+        RBRACE,
 
         // FOR ARTHMETIC THINGS
 
